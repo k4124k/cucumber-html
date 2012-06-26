@@ -78,22 +78,24 @@
             alert("arg of getScenario_total must be dom object!")
         }
     }
-    //Failures 总数
-    function getFailure_total(domRoot) {
-        if ($(domRoot).length > 0) {
-            return $(domRoot).find("section[class^='blockelement scenario ']").filter("section[class*='failed']").length
-        } else {
-            alert("arg of getFailure_total must be dom object!")
-        }
-    }
+
     //Success 总数
     function getSuccess_total(domRoot) {
         if ($(domRoot).length > 0) {
-            return getScenario_total(domRoot) - getFailure_total(domRoot)
+            return $(domRoot).find("section[class='blockelement scenario passed']").length
         } else {
             alert("arg of getSuccess_total must be dom object!")
         }
     }
+    //Failures 总数
+    function getFailure_total(domRoot) {
+        if ($(domRoot).length > 0) {
+            return getScenario_total(domRoot) - getSuccess_total(domRoot)
+        } else {
+            alert("arg of getFailure_total must be dom object!")
+        }
+    }
+
     //Success rate
     function getSuccessRate(domRoot) {
         return GetPercent(getSuccess_total(domRoot), getScenario_total(domRoot))
