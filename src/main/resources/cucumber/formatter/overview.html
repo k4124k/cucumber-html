@@ -24,10 +24,10 @@
             <!--<th>Time</th>-->
         </tr>
         <tr valign="top" class="Failure">
-            <td>3</td>
-            <td>1</td>
-            <td>0</td>
-            <td>66.67%</td>
+            <td><a title="显示所有feature中所有的scenario" onclick="displayAllResultByStatus()"></a></td>
+            <td><a title="显示成功的scenario" onclick="displayAllResultByStatus(true)"></a></td>
+            <td><a title="显示失败的scenario" onclick="displayAllResultByStatus(false)"></a></td>
+            <td></td>
             <!--<td>0.251</td>-->
         </tr>
         </tbody>
@@ -112,16 +112,60 @@
         return total <= 0 ? "0%" : (Math.round(num / total * 10000) / 100.00 + "%");
     }
 
+    function displayAllResultByStatus(_isSuccess) {
+        //显示所有的scenario
+        $("section[class^='blockelement ']").each(function () {
+            $(this).show()
+        })
+        if (arguments.length == 1) {
+            if (_isSuccess) {
+                $("section[class='blockelement feature'] section[class!='blockelement scenario passed']").each(function () {
+                    $(this).hide()
+                })
+            } else {
+                $("section[class='blockelement feature'] section[class='blockelement scenario passed']").each(function () {
+                    $(this).hide()
+                })
+            }
+        }
+    }
+
+
+    function displayResultByFeature(_strFeatureName, _success) {
+        displayAllResultByStatus()
+        var $feature
+        //隐藏除指定名称外的feature
+        $("section[class='blockelement feature']").each(function () {
+            if ($(this).find("span.name").html() == _strFeatureName) {
+                $feature = $(this)
+            } else {
+                $(this).hide()
+            }
+        })
+        if (arguments.length == 2) {
+            if (_success) {
+                $feature.find("section[class!='blockelement scenario passed']").each(function () {
+                    $(this).hide()
+                })
+            } else {
+                $feature.find("section[class='blockelement scenario passed']").each(function () {
+                    $(this).hide()
+                })
+            }
+        }
+    }
+
     //添加feature明细
     function addFeatureResult() {
         $("section[class='blockelement feature']").each(function (index) {
                     //获取feature名称
                     var featureName = $(this).find("summary:first span.name").text()
                     $("table.details:last tbody").append("\<tr valign=\"top\" class=\"Failure\"\>")
-                    $("table.details:last tr.Failure:last").append("\<td\>" + featureName + "\<\/td\>")
-                            .append("\<td\>" + getScenario_total($(this)) + "\<\/td\>")
-                            .append("\<td\>" + getSuccess_total($(this)) + "\<\/td\>")
-                            .append("\<td\>" + getFailure_total($(this)) + "\<\/td\>")
+                    $("table.details:last tr.Failure:last")
+                            .append("\<td\>\<a\ title=\"显示当前feature中所有的scenario\" onclick=\"displayResultByFeature($(this).text())\">" + featureName + "\<\/td\>")
+                            .append("\<td\>\<a\ title=\"显示当前feature中所有的scenario\" onclick=\"displayResultByFeature($(this).parent().parent().find('td:eq(0) a').text())\">" + getScenario_total($(this)) + "<\/td\>")
+                            .append("\<td\>\<a\ title=\"显示当前feature中所有成功的scenario\" onclick=\"displayResultByFeature($(this).parent().parent().find('td:eq(0) a').text(),true)\">" + getSuccess_total($(this)) + "\<\/td\>")
+                            .append("\<td\>\<a\ title=\"显示当前feature中所有失败的scenario\" onclick=\"displayResultByFeature($(this).parent().parent().find('td:eq(0) a').text(),false)\">" + getFailure_total($(this)) + "\<\/td\>")
                             .append("\<td\>" + getSuccessRate($(this)) + "\<\/td\>")
                 }
         )
@@ -130,11 +174,11 @@
     window.onload = function () {
 //        $("section[class='blockelement feature']").clone(true).appendTo($("div.cucumber-report"))
         //Scenarios 总数
-        $("table.details:eq(0) tr.Failure td:eq(0)").text(getScenario_total(document))
+        $("table.details:eq(0) tr.Failure td:eq(0) a").text(getScenario_total(document))
         //Failures 总数
-        $("table.details:eq(0) tr.Failure td:eq(2)").text(getFailure_total(document))
+        $("table.details:eq(0) tr.Failure td:eq(2) a").text(getFailure_total(document))
         //Success 总数
-        $("table.details:eq(0) tr.Failure td:eq(1)").text(getSuccess_total(document))
+        $("table.details:eq(0) tr.Failure td:eq(1) a").text(getSuccess_total(document))
         //Success rate
         $("table.details:eq(0) tr.Failure td:eq(3)").text(getSuccessRate(document))
 

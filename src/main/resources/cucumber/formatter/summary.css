@@ -14,6 +14,11 @@ div.cucumber-overview table.details tr td{
     background:#eeeee0;
 }
 
+a {
+    text-decoration:underline;
+    color:blue;
+}
+
 p {
     line-height:1.5em;
     margin-top:0.5em; margin-bottom:1.0em;
